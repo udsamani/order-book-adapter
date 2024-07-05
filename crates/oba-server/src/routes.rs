@@ -1,3 +1,4 @@
+use axum::routing::post;
 use axum::{routing::get, Router};
 use crate::handlers::instruments::subscribe_instrument;
 use crate::handlers::instruments::unsubscribe_instrument;
@@ -16,7 +17,7 @@ async fn hello_world() -> String {
 fn instrument_routes() -> Router<> {
 
     Router::new()
-        .route("/:name/subscribe", get(subscribe_instrument))
-        .route("/:name/unsubscribe", get(unsubscribe_instrument))
+        .route("/subscribe", post(subscribe_instrument))
+        .route("/unsubscribe", post(unsubscribe_instrument))
     
 }

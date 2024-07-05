@@ -1,7 +1,9 @@
 
-use axum::extract::Path;
+use axum::extract::Json;
 use tracing::info;
 
-pub async fn subscribe_instrument(Path(name): Path<String>) {
-    info!("Subscribe to {}", name)
+use super::SubscribeInstrumentRequest;
+
+pub async fn subscribe_instrument(Json(request): Json<SubscribeInstrumentRequest>) {
+    info!("Subscribe to {:?}", request)
 }

@@ -1,8 +1,10 @@
-use axum::extract::Path;
+use axum::extract::Json;
 use tracing::info;
 
+use super::UnsubscribeInstrumentRequest;
 
 
-pub async fn unsubscribe_instrument(Path(name): Path<String>) {
-    info!("Unsubscribe  {}", name);
+
+pub async fn unsubscribe_instrument(Json(request): Json<UnsubscribeInstrumentRequest>) {
+    info!("Unsubscribe  {:?}", request);
 }
