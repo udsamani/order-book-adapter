@@ -9,6 +9,8 @@ publish = false
 # Async 
 tokio.workspace = true
 axum.workspace = true
+tokio-tungstenite.workspace = true
+futures-util.workspace = true
 
 dotenvy.workspace = true
 
