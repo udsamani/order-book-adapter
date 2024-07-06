@@ -10,6 +10,6 @@ pub async fn subscribe_instrument(
     Json(request): Json<SubscribeInstrumentRequest>,
 ) {
     info!("Subscribe to {:?}", request);
-    let t = state.bitstamp_instrument_order_provider.as_ref();
-    t.subscriber_instrument(request.name)
+    let mut order_book_manager = state.order_book_manager.write().await;
+    order_book_manager.subscribe_instrument(request.name, request.order_book_depth);
 }

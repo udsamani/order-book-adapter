@@ -1,7 +1,9 @@
+pub use get_order_book::get_order_book;
 use serde::Deserialize;
 pub use subscribe_instrument::subscribe_instrument;
 pub use unsubscribe_instrument::unsubscribe_instrument;
 
+mod get_order_book;
 mod subscribe_instrument;
 mod unsubscribe_instrument;
 

@@ -25,9 +25,9 @@ pub struct BitstampLiveOrderBookData {
     #[serde_as(as = "DisplayFromStr")]
     timestamp: u64,
     #[serde(deserialize_with = "deserialize_bids_or_asks")]
-    bids: VecDeque<(f64, f64)>,
+    bids: VecDeque<(u64, f64)>,
     #[serde(deserialize_with = "deserialize_bids_or_asks")]
-    asks: VecDeque<(f64, f64)>,
+    asks: VecDeque<(u64, f64)>,
 }
 
 #[derive(Debug, Serialize)]
@@ -51,13 +51,14 @@ pub enum BitstampPublicChannel {
 
 pub fn bitstamp_response_to_live_order_message(
     data: BitstampLiveOrderBookData,
-    channel: String,
+    channel: &str,
 ) -> LiveOrderBookMessage {
-    return LiveOrderBookMessage::new(channel, data.bids, data.asks, data.timestamp);
+    let symbol = channel.split("_").last().unwrap();
+    return LiveOrderBookMessage::new(symbol.to_string(), data.bids, data.asks, data.timestamp);
 }
 
 impl BitstampPublicChannel {
-    pub fn live_order_book(instrument: String) -> Self {
+    pub fn live_order_book(instrument: &str) -> Self {
         Self::LiverOrderBook {
             channel: format!("{}_{}", LIVE_ORDER_BOOK, instrument),
         }
@@ -79,7 +80,7 @@ impl<'a> Serialize for BitstampPublicChannel {
     }
 }
 
-pub fn deserialize_bids_or_asks<'de, D>(deserializer: D) -> Result<VecDeque<(f64, f64)>, D::Error>
+pub fn deserialize_bids_or_asks<'de, D>(deserializer: D) -> Result<VecDeque<(u64, f64)>, D::Error>
 where
     D: Deserializer<'de>,
 {
@@ -89,7 +90,7 @@ where
     for raw_order in raw_orders {
         let price = raw_order[0].parse::<f64>().map_err(DeError::custom)?;
         let amount = raw_order[1].parse::<f64>().map_err(DeError::custom)?;
-        orders.push_back((price, amount));
+        orders.push_back((price as u64, amount));
     }
     Ok(orders)
 }
