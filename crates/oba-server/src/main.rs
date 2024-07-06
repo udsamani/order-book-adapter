@@ -20,7 +20,6 @@ mod routes;
 
 #[derive(Clone)]
 pub struct AppState {
-    bitstamp_instrument_order_provider: Arc<BitstampInstrumentOrderProvider>,
     order_book_manager: Arc<RwLock<OrderBookManager>>,
 }
 
@@ -45,7 +44,6 @@ async fn main() {
     });
 
     let app_state = AppState {
-        bitstamp_instrument_order_provider: Arc::new(bitstamp_instrument_order_provider),
         order_book_manager: order_book_manager.clone(),
     };
     let app = oba_router(app_state);

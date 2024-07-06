@@ -1,6 +1,6 @@
 use serde::de::Error as DeError;
 use serde::{ser::SerializeStruct, Deserialize, Deserializer, Serialize};
-use serde_with::{serde_as, DisplayFromStr};
+use serde_with::serde_as;
 use std::collections::VecDeque;
 
 use crate::domain::models::orderbook::LiveOrderBookMessage;
@@ -12,6 +12,8 @@ const LIVE_ORDER_BOOK: &str = "order_book";
 pub enum BitstampResponse {
     #[serde(rename = "bts:subscription_succeeded")]
     SubscriptionSucceeded { channel: String },
+    #[serde(rename = "bts:unsubscription_succeeded")]
+    UnsubscriptionSucceeded { channel: String },
     #[serde(rename = "data")]
     LiveOrderBookData {
         data: BitstampLiveOrderBookData,
@@ -22,8 +24,6 @@ pub enum BitstampResponse {
 #[serde_as]
 #[derive(Debug, Deserialize)]
 pub struct BitstampLiveOrderBookData {
-    #[serde_as(as = "DisplayFromStr")]
-    timestamp: u64,
     #[serde(deserialize_with = "deserialize_bids_or_asks")]
     bids: VecDeque<(u64, f64)>,
     #[serde(deserialize_with = "deserialize_bids_or_asks")]
@@ -54,7 +54,7 @@ pub fn bitstamp_response_to_live_order_message(
     channel: &str,
 ) -> LiveOrderBookMessage {
     let symbol = channel.split("_").last().unwrap();
-    return LiveOrderBookMessage::new(symbol.to_string(), data.bids, data.asks, data.timestamp);
+    return LiveOrderBookMessage::new(symbol.to_string(), data.bids, data.asks);
 }
 
 impl BitstampPublicChannel {

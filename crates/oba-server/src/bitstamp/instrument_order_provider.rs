@@ -1,18 +1,17 @@
 use std::sync::Arc;
 
-use futures_util::{SinkExt, StreamExt};
+use futures_util::{SinkExt as _, StreamExt};
 use tokio::sync::{
     mpsc::{UnboundedReceiver, UnboundedSender},
     Mutex,
 };
 use tokio_tungstenite::{connect_async, tungstenite::Message};
-use tracing::info;
+use tracing::{error, info};
 
 use crate::domain::models::orderbook::LiveOrderBookMessage;
 
 use super::models::{
-    bitstamp_response_to_live_order_message, BitstampPublicChannel, BitstampRequest,
-    BitstampRequestEvent, BitstampResponse,
+    bitstamp_response_to_live_order_message, BitstampRequest,BitstampResponse,
 };
 
 pub struct BitstampInstrumentOrderProvider {
@@ -64,8 +63,16 @@ impl BitstampInstrumentOrderProvider {
                                 let order_message: LiveOrderBookMessage =
                                     bitstamp_response_to_live_order_message(data, &channel);
 
-                                tx_order_message_sender.send(order_message);
+                                match tx_order_message_sender.send(order_message) {
+                                    Ok(_) => {},
+                                    Err(err) => {
+                                        error!("error while sending message to order book manager {}", err);
+                                    },
+                                }
                             }
+                            BitstampResponse::UnsubscriptionSucceeded { channel } => {
+                                info!("Successfully unsubscribed {}", channel);
+                            },
                         }
                     }
                     Err(e) => {

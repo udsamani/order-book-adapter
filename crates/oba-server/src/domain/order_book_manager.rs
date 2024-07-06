@@ -4,7 +4,7 @@ use tokio::sync::{
     mpsc::{UnboundedReceiver, UnboundedSender},
     RwLock,
 };
-use tracing::info;
+use tracing::{error, info};
 
 use crate::bitstamp::models::{BitstampPublicChannel, BitstampRequest, BitstampRequestEvent};
 
@@ -13,39 +13,41 @@ use super::models::orderbook::{LiveOrderBookMessage, OrderBook};
 #[derive(Debug)]
 pub struct OrderBookManager {
     order_books: HashMap<String, OrderBook>,
-    subscribe_instrument_sender: UnboundedSender<BitstampRequest>,
+    instrument_request_sender: UnboundedSender<BitstampRequest>,
 }
 
 impl OrderBookManager {
     pub fn new(subscribe_instrument_sender: UnboundedSender<BitstampRequest>) -> Self {
         Self {
             order_books: HashMap::new(),
-            subscribe_instrument_sender,
+            instrument_request_sender: subscribe_instrument_sender,
         }
     }
 }
 
 impl OrderBookManager {
-    pub fn get_order_book(&mut self, symbol: &str) -> &mut OrderBook {
+    pub fn get_mut_order_book(&mut self, symbol: &str) -> Option<&mut OrderBook> {
         let symbol = symbol.to_string();
-        let order_book = self.order_books.get_mut(&symbol).unwrap();
-        return order_book;
+        return self.order_books.get_mut(&symbol);
     }
 
-    pub fn get_order_books(&self) {
-        info!("Order Book = {:?}", self.order_books);
+    pub fn get_order_book(&self, instrument: &str) -> Option<&OrderBook> {
+        self.order_books.get(instrument)
     }
 
     pub fn subscribe_instrument(&mut self, instrument: String, max_depth: usize) {
         self.order_books.insert(
             instrument.to_string(),
-            OrderBook::new(instrument.to_string(), max_depth),
+            OrderBook::new(max_depth),
         );
         let request = BitstampRequest {
             event: BitstampRequestEvent::Subscribe,
             data: BitstampPublicChannel::live_order_book(&instrument),
         };
-        self.subscribe_instrument_sender.send(request);
+        match self.instrument_request_sender.send(request) {
+            Ok(_) => info!("successfully sent message to subscribe instrument {}", &instrument),
+            Err(e) => error!("unable to send message to subscribe instrument {}, error {}", &instrument, e)
+        }
     }
 
     pub fn unsubscribe_instrument(&mut self, instrument: String) {
@@ -53,7 +55,7 @@ impl OrderBookManager {
             event: BitstampRequestEvent::Unsubscribe,
             data: BitstampPublicChannel::live_order_book(&instrument),
         };
-        self.subscribe_instrument_sender.send(request);
+        self.instrument_request_sender.send(request);
         self.order_books.remove(&instrument);
         
     }
@@ -66,8 +68,15 @@ pub async fn process_order_book_messages(
 ) {
     while let Some(order_message) = receiver.recv().await {
         let mut obm = order_book_manager.write().await;
-        let order_book = obm.get_order_book(order_message.get_symbol());
-        order_book.update_bids(order_message.get_bids());
-        order_book.update_asks(order_message.get_asks());
+        let order_book = obm.get_mut_order_book(order_message.get_symbol());
+        match order_book {
+            Some(ob) => {
+                ob.update_bids(order_message.get_bids());
+                ob.update_asks(order_message.get_asks());
+            },
+            None => {
+                tracing::error!("Could not find order book, maybe it was unsubscribed");
+            }
+        }
     }
 }
