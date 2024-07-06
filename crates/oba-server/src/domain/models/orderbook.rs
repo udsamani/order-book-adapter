@@ -58,12 +58,15 @@ impl OrderBook {
         for (price, amount) in bids {
             let price = price.clone();
             let amount = amount.clone();
-            if amount != 0.0 {
-                self.bids
-                    .entry(price)
-                    .and_modify(|a| *a += amount)
-                    .or_insert(amount);
+            if self.bids.len() + 1 > self.max_depth {
+                if let Some(&lowest_price) = self.bids.keys().next() {
+                    self.bids.remove(&lowest_price);
+                }
             }
+            self.bids
+                .entry(price)
+                .and_modify(|a| *a += amount)
+                .or_insert(amount);
         }
     }
 
@@ -71,12 +74,15 @@ impl OrderBook {
         for (price, amount) in asks {
             let price = price.clone();
             let amount = amount.clone();
-            if amount != 0.0 {
-                self.asks
-                    .entry(price)
-                    .and_modify(|a| *a += amount)
-                    .or_insert(amount);
+            if self.asks.len() + 1 > self.max_depth {
+                if let Some(&highest_price) = self.asks.keys().next_back() {
+                    self.asks.remove(&highest_price);
+                }
             }
+            self.asks
+                .entry(price)
+                .and_modify(|a| *a += amount)
+                .or_insert(amount);
         }
     }
 }

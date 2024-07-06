@@ -47,6 +47,17 @@ impl OrderBookManager {
         };
         self.subscribe_instrument_sender.send(request);
     }
+
+    pub fn unsubscribe_instrument(&mut self, instrument: String) {
+        let request = BitstampRequest {
+            event: BitstampRequestEvent::Unsubscribe,
+            data: BitstampPublicChannel::live_order_book(&instrument),
+        };
+        self.subscribe_instrument_sender.send(request);
+        self.order_books.remove(&instrument);
+        
+    }
+
 }
 
 pub async fn process_order_book_messages(
