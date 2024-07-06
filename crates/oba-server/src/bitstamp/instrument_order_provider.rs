@@ -8,7 +8,7 @@ use tokio::sync::{
 use tokio_tungstenite::{connect_async, tungstenite::Message};
 use tracing::{error, info};
 
-use crate::domain::models::orderbook::LiveOrderBookMessage;
+use crate::domain::models::LiveOrderBookMessage;
 
 use super::models::{
     bitstamp_response_to_live_order_message, BitstampRequest,BitstampResponse,

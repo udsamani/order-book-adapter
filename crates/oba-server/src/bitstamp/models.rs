@@ -3,7 +3,7 @@ use serde::{ser::SerializeStruct, Deserialize, Deserializer, Serialize};
 use serde_with::serde_as;
 use std::collections::VecDeque;
 
-use crate::domain::models::orderbook::LiveOrderBookMessage;
+use crate::domain::models::LiveOrderBookMessage;
 
 const LIVE_ORDER_BOOK: &str = "order_book";
 
