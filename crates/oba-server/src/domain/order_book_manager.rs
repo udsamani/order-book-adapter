@@ -8,7 +8,7 @@ use tracing::{error, info};
 
 use crate::bitstamp::models::{BitstampPublicChannel, BitstampRequest, BitstampRequestEvent};
 
-use super::models::orderbook::{LiveOrderBookMessage, OrderBook};
+use super::models::{LiveOrderBookMessage, OrderBook};
 
 #[derive(Debug)]
 pub struct OrderBookManager {

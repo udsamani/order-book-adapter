@@ -2,7 +2,7 @@ use std::{net::SocketAddr, sync::Arc};
 
 use bitstamp::instrument_order_provider::BitstampInstrumentOrderProvider;
 use domain::{
-    models::orderbook::LiveOrderBookMessage,
+    models::LiveOrderBookMessage,
     order_book_manager::{process_order_book_messages, OrderBookManager},
 };
 use routes::oba_router;
