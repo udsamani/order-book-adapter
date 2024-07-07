@@ -61,7 +61,6 @@ Run the following command with these required flag(s) to get order book.
 `target/debug/oba-cli get-order-book --instrument btcusd`
 
 
+# GIF Showing the Workflow
 
-
-
-
+![img](docs/cli.gif)
