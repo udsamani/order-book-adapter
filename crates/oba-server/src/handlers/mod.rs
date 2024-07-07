@@ -24,13 +24,23 @@ pub struct OrderBookResponse {
     asks: BTreeMap<u64, f64>,
 }
 
+#[derive(Debug, Serialize)]
+pub struct BestBidResponse {
+    pub best_bid: u64,
+}
+
+#[derive(Debug, Serialize)]
+pub struct BestAskResponse {
+    best_ask: u64,
+}
+
 #[derive(Debug)]
-pub enum OrderBookError {
+pub enum OrderBookAdapterError {
     InternalServerError,
     NotFound(String),
 }
 
-impl IntoResponse for OrderBookError {
+impl IntoResponse for OrderBookAdapterError {
     fn into_response(self) -> axum::response::Response {
         let (status, error_msg) = match self {
             Self::NotFound(instrument) => (

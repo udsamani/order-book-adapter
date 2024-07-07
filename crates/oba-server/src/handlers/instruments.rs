@@ -3,10 +3,10 @@ use tracing::info;
 
 use crate::AppState;
 
-use super::{OrderBookError, OrderBookResponse, SubscribeInstrumentRequest, UnsubscribeInstrumentRequest};
+use super::{BestBidResponse, OrderBookAdapterError, OrderBookResponse, SubscribeInstrumentRequest, UnsubscribeInstrumentRequest};
 
 
-pub async fn get_order_book(State(state): State<AppState>, Path(instrument_name): Path<String>) -> Result<Json<OrderBookResponse>, OrderBookError>{
+pub async fn get_order_book(State(state): State<AppState>, Path(instrument_name): Path<String>) -> Result<Json<OrderBookResponse>, OrderBookAdapterError>{
     let order_book_manager = state.order_book_manager.read().await;
     let order_book = order_book_manager.get_order_book(&instrument_name);
 
@@ -20,7 +20,7 @@ pub async fn get_order_book(State(state): State<AppState>, Path(instrument_name)
             Ok(Json(order_book_response))
         },
         None => {
-            Err(OrderBookError::NotFound(instrument_name))
+            Err(OrderBookAdapterError::NotFound(instrument_name))
         }
     }
 }
@@ -41,4 +41,19 @@ pub async fn unsubscribe_instrument(
     info!("Unsubscribe  {:?}", request);
     let mut order_book_manager = state.order_book_manager.write().await;
     order_book_manager.unsubscribe_instrument(request.name);
+}
+
+pub async fn get_best_bid(
+    State(state): State<AppState>,
+    Path(instrument_name): Path<String>) -> Result<Json<BestBidResponse>, OrderBookAdapterError> {
+
+    info!("fetching best bid for {}", instrument_name);
+    let order_book_manager = state.order_book_manager.read().await;
+    let best_bid = order_book_manager.get_best_bid(instrument_name);
+
+    let response = BestBidResponse{
+        best_bid
+    };
+
+    Ok(Json(response))
 }
