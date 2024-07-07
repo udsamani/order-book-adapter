@@ -49,6 +49,11 @@ pub struct GetOrderBookResponse {
     pub asks: BTreeMap<u64, f64>,
 }
 
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct BestBidResponse {
+    pub best_bid: u64,
+}
+
 #[cfg(test)]
 mod tests {
 
