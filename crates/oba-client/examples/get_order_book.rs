@@ -13,6 +13,7 @@ async fn main() {
     let url = Url::parse("http://127.0.0.1:3000").unwrap();
     let client = oba_client::client::OBAClient::new(http_client, url);
 
-    client.get_order_book("btcusd").await;
+    let response = client.get_order_book("btcusd").await.unwrap();
+    println!("{:?}", response);
     
 }

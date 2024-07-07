@@ -2,7 +2,7 @@ use std::time::Duration;
 
 use url::Url;
 
-use crate::models::{OBAClientError, SubscribeInstrumentRequest, UnsubscribeInstrumentRequest};
+use crate::models::{ApiResult, GetOrderBookResponse, OBAClientError, OrderBookAdapterResponse, SubscribeInstrumentRequest, UnsubscribeInstrumentRequest};
 
 const OBA_CLIENT_REQUEST_TIMEOUT: Duration = Duration::from_secs(5);
 const OBA_SUBSCRIBE_INSTRUMENT_PATH: &str = "/api/v1/instruments/subscribe";
@@ -76,26 +76,26 @@ impl OBAClient {
         }
     }
 
-    pub async fn get_order_book(&self, instrument: &str) -> Result<(), OBAClientError> {
+    pub async fn get_order_book(&self, instrument: &str) -> Result<GetOrderBookResponse, OBAClientError> {
 
         let path = format!("/api/v1/instruments/{}/orderbook", instrument);
 
-        let response = self.http
+        let result= self.http
             .get(self.endpoint.join(&path).unwrap())
             .header("Accept", "application/json")
             .send()
             .await;
 
-
-        match response {
-            Ok(r) => {
-                Ok(())
-            },
+        match result {
+            Ok(result) => {
+                Ok(result.json().await?)
+            }
             Err(e) => {
-                Err(OBAClientError::from(e))
+                Err(OBAClientError::Api(e.to_string()))
             }
         }
-        
+
+
     }
 
 }
