@@ -21,7 +21,6 @@ async fn main() {
 
     match &cli.command {
         OBASubCommands::Subscribe { instrument, depth } => {
-            println!("Here");
             subscribe_instrument(&address, instrument, depth).await;            
         },
         OBASubCommands::GetOrderBook { instrument } => {
