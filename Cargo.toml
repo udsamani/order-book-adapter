@@ -7,6 +7,10 @@ resolver = "2"
 
 
 [workspace.dependencies]
+oba-cli = { path = "crates/oba-cli"}
+oba-client = { path = "crates/oba-client"}
+oba-server = { path = "crates/oba-server" }
+
 tokio = { version = "1.38.0", features = ["full"] }
 axum = { version = "0.7.5"}
 futures-util = "0.3.30" 
@@ -26,4 +30,8 @@ serde = {version = "1.0.203", features = ["derive"]}
 serde_json = "1.0.120"
 serde_with = "3.8.3"
 tokio-tungstenite = { version = "0.23.1", features = ["native-tls"] }
+
+# Command Line
+clap = { version = "4.5.8", features = ["derive"]}
+comfy-table = { version = "7.1.1"}
 

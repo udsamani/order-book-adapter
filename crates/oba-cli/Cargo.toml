@@ -1,0 +1,13 @@
+[package]
+name = "oba-cli"
+version = "0.0.1"
+edition = "2021"
+publish = false
+
+
+[dependencies]
+oba-client.workspace = true
+clap.workspace = true
+tokio.workspace = true
+comfy-table.workspace = true
+
