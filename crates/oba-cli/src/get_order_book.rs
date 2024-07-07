@@ -3,9 +3,9 @@ use oba_client::client::OBAClient;
 
 
 
-pub async fn get_order_books(instrument: &str) {
+pub async fn get_order_books(address: &str, instrument: &str) {
 
-    let client = OBAClient::from_endpoint_str("http://localhost:3000");
+    let client = OBAClient::from_endpoint_str(address);
     let response = client.get_order_book(instrument).await.unwrap();
 
     let mut table = Table::new();
