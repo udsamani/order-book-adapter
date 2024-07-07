@@ -39,8 +39,19 @@ fn print_bids_and_asks(response: GetOrderBookResponse) {
 
     let mut i = 0 as usize;
     for (price, amount) in response.asks {
-        let row = rows.get_mut(i).unwrap();
-        row.push(format!("{} @ {}", amount.to_string(), price.to_string()));
+        let row = rows.get_mut(i);
+        match row {
+            Some(row) => {
+                row.push(format!("{} @ {}", amount.to_string(), price.to_string()));
+            },
+            None => {
+                let mut row = Vec::new();
+                row.push(String::from(""));
+                row.push(format!("{} @ {}", amount.to_string(), price.to_string()));
+                rows.push(row);
+                                
+            }
+        }
         i = i + 1;
     }
 
