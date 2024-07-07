@@ -16,7 +16,7 @@ In order, to spin up `oba-server`, a host and port need to be defined. Following
 - `OBA_HOST`
 - `OBA_PORT`
 
-** If not specified, by default the host would be `127.0.0.1` and port `3000` **
+**If not specified, by default the host would be `127.0.0.1` and port `3000`**
 
 
 Please note these are also needed by `oba-client` to identify where to connect to the server, same defaults apply there as well.
@@ -35,8 +35,30 @@ The following are **mandatory** steps that need to be followed, if you want to i
 
 ### Available Commands with `oba-cli`
 
+All of the commands have two options on how they can be invoked.
+
+1. `cd $HOME/order-book-adapter && cargo run --bin oba-cli {command} {flags}`
+2. `cd $HOME/order-book-adapter && cargo build && target/debug/oba-cli {command} {flags}`
 
 #### Subscribe
+
+Run the following command with these required flags to subscribe.
+
+`target/debug/oba-cli subscribe --instrument btcusd --depth 50`
+
+#### Unsubscribe
+
+Run the following command with these required flag(s) to unsubscribe.
+
+`target/debug/oba-cli unsubscribe --instrument btcusd`
+
+
+#### Get Order Book
+
+
+Run the following command with these required flag(s) to get order book.
+
+`target/debug/oba-cli get-order-book --instrument btcusd`
 
 
 
