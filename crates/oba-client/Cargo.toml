@@ -22,4 +22,8 @@ path = "examples/subscribe.rs"
 name = "unsubscribe"
 path = "examples/unsubscribe.rs"
 
+[[example]]
+name = "get-order-book"
+path = "examples/get_order_book.rs"
+
 

@@ -17,13 +17,11 @@ pub struct UnsubscribeInstrumentRequest {
     name: String,
 }
 
-type Type = BTreeMap<u64, f64>;
-
 #[derive(Debug, Serialize)]
 pub struct OrderBookResponse {
     symbol: String,
     bids: BTreeMap<u64, f64>,
-    asks: Type,
+    asks: BTreeMap<u64, f64>,
 }
 
 #[derive(Debug)]

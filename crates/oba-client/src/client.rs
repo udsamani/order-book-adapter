@@ -2,7 +2,7 @@ use std::time::Duration;
 
 use url::Url;
 
-use crate::models::{OBAClientError, SubscribeInstrumentRequest, UnsubscribeInstrument};
+use crate::models::{OBAClientError, SubscribeInstrumentRequest, UnsubscribeInstrumentRequest};
 
 const OBA_CLIENT_REQUEST_TIMEOUT: Duration = Duration::from_secs(5);
 const OBA_SUBSCRIBE_INSTRUMENT_PATH: &str = "/api/v1/instruments/subscribe";
@@ -55,7 +55,7 @@ impl OBAClient {
 
     pub async fn unsubscribe_instrument(&self, instrument: &str) -> Result<(), OBAClientError> {
 
-        let request = UnsubscribeInstrument{
+        let request = UnsubscribeInstrumentRequest{
             name: instrument.to_string()
         };
 
@@ -74,6 +74,28 @@ impl OBAClient {
                 Err(OBAClientError::from(e))
             }
         }
+    }
+
+    pub async fn get_order_book(&self, instrument: &str) -> Result<(), OBAClientError> {
+
+        let path = format!("/api/v1/instruments/{}/orderbook", instrument);
+
+        let response = self.http
+            .get(self.endpoint.join(&path).unwrap())
+            .header("Accept", "application/json")
+            .send()
+            .await;
+
+
+        match response {
+            Ok(r) => {
+                Ok(())
+            },
+            Err(e) => {
+                Err(OBAClientError::from(e))
+            }
+        }
+        
     }
 
 }

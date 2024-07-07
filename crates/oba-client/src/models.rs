@@ -1,3 +1,5 @@
+use std::collections::VecDeque;
+
 use serde::{de::DeserializeOwned, Deserialize, Serialize};
 
 #[derive(Debug, thiserror::Error)]
@@ -30,7 +32,7 @@ pub struct SubscribeInstrumentRequest {
 }
 
 #[derive(Serialize, Default, Debug, Clone)]
-pub struct UnsubscribeInstrument {
+pub struct UnsubscribeInstrumentRequest {
     pub name: String,
 }
 
@@ -46,6 +48,17 @@ mod tests {
         let request = SubscribeInstrumentRequest {
             name: String::from("btcusd"),
             order_book_depth: 5,
+        };
+
+        assert_eq!(expected_request, serde_json::to_string(&request).unwrap());
+    }
+
+    #[test]
+    fn test_unsubscribe_instrument_request_serialization() {
+        let expected_request = r#"{"name":"btcusd"}"#;
+
+        let request = UnsubscribeInstrumentRequest {
+            name: String::from("btcusd"),
         };
 
         assert_eq!(expected_request, serde_json::to_string(&request).unwrap());
