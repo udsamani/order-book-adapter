@@ -86,9 +86,14 @@ impl OBAClient {
             .send()
             .await;
 
+
         match result {
             Ok(result) => {
-                Ok(result.json().await?)
+                if result.status().is_success() {
+                    Ok(result.json().await?)
+                } else {
+                    Err(OBAClientError::Api(result.text().await?))
+                }
             }
             Err(e) => {
                 Err(OBAClientError::Api(e.to_string()))
