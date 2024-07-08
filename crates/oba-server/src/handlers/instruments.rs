@@ -3,7 +3,7 @@ use tracing::info;
 
 use crate::AppState;
 
-use super::{BestBidResponse, OrderBookAdapterError, OrderBookResponse, SubscribeInstrumentRequest, UnsubscribeInstrumentRequest};
+use super::{BestAskResponse, BestBidResponse, OrderBookAdapterError, OrderBookResponse, SubscribeInstrumentRequest, UnsubscribeInstrumentRequest};
 
 
 pub async fn get_order_book(State(state): State<AppState>, Path(instrument_name): Path<String>) -> Result<Json<OrderBookResponse>, OrderBookAdapterError>{
@@ -53,6 +53,21 @@ pub async fn get_best_bid(
 
     let response = BestBidResponse{
         best_bid
+    };
+
+    Ok(Json(response))
+}
+
+pub async fn get_best_ask(
+    State(state): State<AppState>,
+    Path(instrument_name): Path<String>) -> Result<Json<BestAskResponse>, OrderBookAdapterError> {
+
+    info!("fetching best ask for {}", instrument_name);
+    let order_book_manager = state.order_book_manager.read().await;
+    let best_ask= order_book_manager.get_best_ask(instrument_name);
+
+    let response = BestAskResponse{
+        best_ask
     };
 
     Ok(Json(response))

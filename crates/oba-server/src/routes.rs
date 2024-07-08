@@ -1,3 +1,4 @@
+use crate::handlers::instruments::get_best_ask;
 use crate::handlers::instruments::get_best_bid;
 use crate::handlers::instruments::get_order_book;
 use crate::handlers::instruments::subscribe_instrument;
@@ -17,5 +18,6 @@ fn instrument_routes(state: AppState) -> Router {
         .route("/unsubscribe", post(unsubscribe_instrument))
         .route("/:name/orderbook", get(get_order_book))
         .route("/:name/bestbid", get(get_best_bid))
+        .route("/:name/bestask", get(get_best_ask))
         .with_state(state)
 }

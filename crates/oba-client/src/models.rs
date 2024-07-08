@@ -54,6 +54,11 @@ pub struct BestBidResponse {
     pub best_bid: u64,
 }
 
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct BestAskResponse {
+    pub best_ask: u64,
+}
+
 #[cfg(test)]
 mod tests {
 

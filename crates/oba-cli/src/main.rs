@@ -1,5 +1,6 @@
 use std::env;
 
+use best_ask::best_ask;
 use best_bid::best_bid;
 use clap::Parser;
 use cli::{OBACli, OBASubCommands};
@@ -12,6 +13,7 @@ pub mod subscribe;
 pub mod get_order_book;
 pub mod unsubscribe;
 mod best_bid;
+pub mod best_ask;
 
 #[tokio::main]
 async fn main() {
@@ -33,6 +35,9 @@ async fn main() {
         }
         OBASubCommands::BestBid { instrument } => {
             best_bid(&address, &instrument).await;
+        },
+        OBASubCommands::BestAsk { instrument } => {
+            best_ask(&address, &instrument).await;
         }
         
     }

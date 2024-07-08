@@ -33,4 +33,9 @@ pub enum OBASubCommands {
         #[arg(short, long)]
         instrument: String,
     },
+    #[command(about = "Command to fetch the best ask for the instrument")]
+    BestAsk {
+        #[arg(short, long)]
+        instrument: String,
+    },
 }

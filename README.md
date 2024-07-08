@@ -61,6 +61,18 @@ Run the following command with these required flag(s) to get order book.
 `target/debug/oba-cli get-order-book --instrument btcusd`
 
 
+#### Best Bid
+
+Run the following command with these required flag(s) to best bid.
+
+`target/debug/oba-cli best-bid --instrument btcusd`
+
+#### Best Ask 
+Run the following command with these required flag(s) to best bid.
+
+`target/debug/oba-cli best-ask --instrument btcusd`
+
+
 # GIF Showing the Workflow
 
 ![img](docs/cli.gif)

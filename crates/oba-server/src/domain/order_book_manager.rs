@@ -70,6 +70,16 @@ impl OrderBookManager {
         
     }
 
+    pub fn get_best_ask(&self, instrument: String) -> u64 {
+        let order_book = self.get_order_book(&instrument).unwrap();
+        if let Some(key) = order_book.get_asks().keys().next() {
+            return key.clone();
+        } else {
+            0
+        }
+        
+    }
+
 }
 
 pub async fn process_order_book_messages(

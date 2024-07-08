@@ -46,7 +46,7 @@ impl OrderBook {
             let price = price.clone();
             let amount = amount.clone();
             if self.bids.len() + 1 > self.max_depth {
-                if let Some(&lowest_price) = self.bids.keys().next_back() {
+                if let Some(&lowest_price) = self.bids.keys().next() {
                     self.bids.remove(&lowest_price);
                 }
             }
@@ -62,7 +62,7 @@ impl OrderBook {
             let price = price.clone();
             let amount = amount.clone();
             if self.asks.len() + 1 > self.max_depth {
-                if let Some(&highest_price) = self.asks.keys().next() {
+                if let Some(&highest_price) = self.asks.keys().next_back() {
                     self.asks.remove(&highest_price);
                 }
             }
